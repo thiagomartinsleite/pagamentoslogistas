@@ -1,0 +1,268 @@
+openapi: "3.0.0"
+info:
+  title: Pagamentos Logistas
+  version: '1.0'
+paths:
+  /v1/user:
+    post:
+      summary: Insert a new user
+      operationId: insertUsers
+      description: Insert a new user
+      tags:
+        - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsersRequestV1'
+      responses:
+        '200':
+          description: "Usuario inserido com sucesso!"
+        '400':
+          description: "Erro causado pelos dados da requisicao, ou seja, requisicao invalida."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response400V1Accounts'
+        '500':
+          description: "Erro inesperado no servidor"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response500V1Accounts'
+    get:
+      summary: Insert a new user
+      operationId: searchUsers
+      description: Insert a new user
+      tags:
+        - Users
+      parameters:
+        - name: "document"
+          in: "query"
+          description: 'Referente ao CPF/CNPJ'
+          required: false
+          schema:
+            type: string
+            example: '12314545265'
+      responses:
+        '200':
+          description: "Retorno das informações das contas"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersResponseV1'
+        '204':
+          description: "No Content"
+        '400':
+          description: "Erro causado pelos dados da requisicao, ou seja, requisicao invalida."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response400V1Accounts'
+        '500':
+          description: "Erro inesperado no servidor"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response500V1Accounts'
+  /v1/transaction:
+    post:
+      summary: Insert a new user
+      operationId: insertTransaction
+      description: Insert a new transaction
+      tags:
+        - Transaction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequestV1'
+      responses:
+        '200':
+          description: "Retorno das informações de transação"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponsetV1'
+        '400':
+          description: "Erro causado pelos dados da requisicao, ou seja, requisicao invalida."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response400V1Accounts'
+        '500':
+          description: "Erro inesperado no servidor"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response500V1Accounts'
+components:
+  schemas:
+    TransactionRequestV1:
+      type: object
+      description: 'Request a new transaction'
+      properties:
+        senderId:
+          description: 'Id do usuario que esta enviando a transação'
+          type: integer
+          format: int64
+          example: 1
+        receiverId:
+          description: 'Id do usuario que esta recebendo a transação'
+          type: integer
+          format: int64
+          example: 2
+        amount:
+          description: 'Valor da transação'
+          type: number
+          minimum: 0.01
+          maximum: 9999999999999
+          multipleOf: 0.01
+          example: 789.39
+    TransactionResponsetV1:
+      type: object
+      description: 'Request a new transaction'
+      properties:
+        Id:
+          description: 'Id transação'
+          type: integer
+          format: int64
+          example: 1
+        amount:
+          description: 'Valor da transação'
+          type: number
+          minimum: 0.01
+          maximum: 9999999999999
+          multipleOf: 0.01
+          example: 789.39
+        senderId:
+          $ref: '#/components/schemas/UsersResponseV1'
+        receiverId:
+          $ref: '#/components/schemas/UsersResponseV1'
+    UsersRequestV1:
+      type: object
+      description: 'Request user item'
+      properties:
+        firstName:
+          description: 'First Name'
+          type: string
+          example: 'first Name'
+        lastName:
+          description: 'Last Name'
+          type: string
+          example: 'Last Name'
+        document:
+          description: 'CPF or CNPJ'
+          type: string
+          example: '99999999960'
+        email:
+          description: 'email'
+          type: string
+          example: 'xxx@gmail.com'
+        password:
+          description: 'password'
+          type: string
+          example: 'password'
+        balance:
+          description: 'balance'
+          type: number
+          minimum: 0.01
+          maximum: 9999999999999
+          multipleOf: 0.01
+          example: 10.39
+        userType:
+          description: 'User Type'
+          type: string
+          enum: [ "COMMON", "MERCHANT"]
+          example: 'MERCHANT'
+    UsersResponseV1:
+      type: object
+      description: 'Request user item'
+      properties:
+        id:
+          description: 'id'
+          type: integer
+          format: int64
+          example: '123456'
+          minimum: 1
+          maximum: 999999999999
+        firstName:
+          description: 'First Name'
+          type: string
+          example: 'first Name'
+        lastName:
+          description: 'Last Name'
+          type: string
+          example: 'Last Name'
+        document:
+          description: 'CPF or CNPJ'
+          type: string
+          example: '999.999.999-60'
+          minLength: 11
+          maxLength: 14
+        email:
+          description: 'email'
+          type: string
+          example: 'xxx@gmail.com'
+        password:
+          description: 'password'
+          type: string
+          example: 'password'
+        balance:
+          description: 'balance'
+          type: number
+          minimum: 0.01
+          maximum: 9999999999999
+          multipleOf: 0.01
+          example: 10.39
+        userType:
+          description: 'User Type'
+          type: string
+          enum: [ "COMMON", "MERCHANT"]
+          example: 'MERCHANT'
+    OperationCodeResponse:
+      type: object
+      description: An error when processing a request.
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OperationCodeItem'
+    OperationCodeItem:
+      type: object
+      description: 'Response operation code item'
+      properties:
+        operationCode:
+          description: 'Operation Code'
+          type: string
+          example: '788'
+        type:
+          description: 'Type operation code'
+          type: string
+          enum: [ "CREDIT", "DEBIT"]
+          example: 'CREDIT'
+    response400V1Accounts:
+      type: "object"
+      description: "Erro causado pelos dados da requisicao, ou seja, requisicao invalida."
+      properties:
+        error:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              code:
+                description: "Code error"
+    response500V1Accounts:
+      type: "object"
+      description: "Erro inesperado no servidor"
+      allOf:
+        - $ref: '#/components/schemas/defaultErrorV1Accounts'
+    defaultErrorV1Accounts:
+      type: "object"
+      properties:
+        code:
+          description: "Code error"
+          type: "string"
+        message:
+          description: "Description error"
+          type: "string"
