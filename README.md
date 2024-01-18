@@ -9,3 +9,10 @@ Spring Jpa
 Banco em memoria M2
 Lombok
 Openapi para geração dos controllers utilizando swagger.
+Maven
+
+para buildar o projeto tenha o maven instalado a partir da versão 3.8.4
+
+comando:
+
+mvn clean install
